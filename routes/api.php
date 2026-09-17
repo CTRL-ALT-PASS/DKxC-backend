@@ -1,105 +1,54 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InventoryItemController;
+use App\Http\Controllers\EmployeeController;
 
-$products = [
-    [
-        'product_id' => 1,
-        'product_name' => 'Matcha Coffee',
-        'description' => 'A classic Japanese drink combined with coffee.',
-        'selling_price' => 150.00,
-        'cost_price' => 100.00,
-        'reorder_level' => 10,
-        'product_status' => 'active'
-    ],
-];
+// --- LOGIN ---
 
-$nextId = 2;
+Route::post('/login', [AuthController::class, 'login']);
 
-// CREATE
-Route::post('/products', function () use(&$products) {
-    $validated = request()->validate([
-    'product_name'   => 'required|string',
-    'selling_price'  => 'required|numeric',
-    'cost_price'     => 'required|numeric',
-    'reorder_level'  => 'required|integer',
-    'product_status' => 'required|in:active,inactive',
-    ]);
+// --- SANCTUM ---
+
+Route::middleware('auth:sanctum')->group(function () {
+	
+    // LOGOUT
+	
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    // --- Product ---
+	
+	Route::get('/products', [ProductController::class, 'index']);
+	Route::get('/products/{product}', [ProductController::class, 'show']);
+	Route::post('/products', [ProductController::class, 'store']);
+    Route::patch('/products/{product}', [ProductController::class, 'update']);
+	Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+
+    // --- Category ---
     
-    $newProduct = [
-    'product_id'     => $nextId,
-    'product_name'   => request('product_name'),
-    'description'    => request('description'),
-    'selling_price'  => request('selling_price'),
-    'cost_price'     => request('cost_price'),
-    'reorder_level'  => request('reorder_level'),
-    'product_status' => request('product_status'),
-];
+    Route::get('/categories', [CategoryController::class, 'index']);
+	Route::get('/categories/{category}', [CategoryController::class, 'show']);
+	Route::post('/categories', [CategoryController::class, 'store']);
+    Route::patch('/categories/{category}', [CategoryController::class, 'update']);
+	Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+
+    // --- InventoryItem ---
+
+    Route::get('/inventory-items', [InventoryItemController::class, 'index']);
+	Route::get('/inventory-items/{inventory_item}', [InventoryItemController::class, 'show']);
+	Route::post('/inventory-items', [InventoryItemController::class, 'store']);
+    Route::patch('/inventory-items/{inventory_item}', [InventoryItemController::class, 'update']);
+	Route::delete('/inventory-items/{inventory_item}', [InventoryItemController::class, 'destroy']);
+
+    // --- Employee ---
+	
+	Route::get('/employees', [EmployeeController::class, 'index']);
+	Route::get('/employees/{employee}', [EmployeeController::class, 'show']);
+	Route::post('/employees', [EmployeeController::class, 'store']);
+    Route::patch('/employees/{employee}', [EmployeeController::class, 'update']);
+	Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy']);
     
-    $products[] = $newProduct;
-    $nextId++;
-
-    return response()->json(['message' => 'Product created successfully',
-                             'data' => $newProduct], 201);
-});
-
-// READ ALL
-Route::get('/products', function () use ($products) {
-    return response()->json ($products, 200);
-});
-
-// READ ONE
-Route::get('/products/{product_id}', function ($product_id) use ($products){
-    $product = collect($products)->firstWhere('product_id', $product_id);
-
-    if(!$product){
-        return response()->json(['message' => 'Product not found.'], 404);
-    }
-
-    return response()->json($product, 200);
-});
-
-// UPDATE
-Route::patch('/products/{product_id}', function ($product_id) use(&$products) {
-    request()->validate([
-         'product_name'   => 'sometimes|string',
-         'selling_price'  => 'sometimes|numeric',
-         'cost_price'     => 'sometimes|numeric',
-         'reorder_level'  => 'sometimes|integer',
-         'product_status' => 'sometimes|in:active,inactive',
-     ]);
-    
-    $key = array_search($product_id, array_column($products, 'product_id'));
-
-    if ($key === false) {
-        return response()->json(['message' => 'Product not found.'], 404);
-    }
-
-    if (request()->has('product_name'))   $products[$key]['product_name']   = request('product_name');
-    if (request()->has('description'))    $products[$key]['description']    = request('description');
-    if (request()->has('selling_price'))  $products[$key]['selling_price']  = request('selling_price');
-    if (request()->has('cost_price'))     $products[$key]['cost_price']     = request('cost_price');
-    if (request()->has('reorder_level'))  $products[$key]['reorder_level']  = request('reorder_level');
-    if (request()->has('product_status')) $products[$key]['product_status'] = request('product_status');
-
-    return response()->json([
-        'message' => 'Product updated successfully!',
-        'data'    => $products[$key],
-    ], 200);
-});
-
-// DELETE
-Route::delete('/products/{product_id}', function ($product_id) use (&$products) {
-    $key = array_search($product_id, array_column($products, 'product_id'));
-
-    if ($key === false) {
-        return response()->json(['message' => 'Product not found.'], 404);
-    }
-    
-    unset($products[$key]);
-
-    $products = array_values($products);
-
-    return response()->json(['message' => 'Product deleted!'], 200);
 });
