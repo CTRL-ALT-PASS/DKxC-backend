@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     // GET ALL
-    public function index()
+    public function index(Request $request)
 	{
-        return response()->json(Category::all(), 200);
-    }
+		$categories = Category::query();
+
+		if ($request->has('search')) {
+			$categories->where('category_name', 'like', "%{$request->query('search')}%");
+		}
+
+		return response()->json($categories->get(), 200);
+	}
 
     // GET ONE
     public function show(Category $category)

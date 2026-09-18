@@ -9,10 +9,17 @@ use Illuminate\Http\Request;
 class EmployeeController extends Controller
 {
     // GET ALL
-    public function index()
+    public function index(Request $request)
 	{
-        return response()->json(Employee::all(), 200);
-    }
+		$employees = Employee::query();
+
+		if ($request->has('search')) {
+			$employees->where('employee_id', 'like', "%{$request->query('search')}%")
+					  ->orWhere('name', 'like', "%{$request->query('search')}%");
+		}
+
+		return response()->json($employees->get(), 200);
+	}
     
     // GET ONE
     public function show(Employee $employee)

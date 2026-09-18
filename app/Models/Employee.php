@@ -31,11 +31,13 @@ class Employee extends Authenticatable
         'pin_code'
     ];
 
-    /**
-     * Pass the custom PIN field to Laravel's Auth validation driver.
-     */
     public function getAuthPassword()
     {
         return $this->pin_code;
     }
+	
+	public function getKey()
+	{
+		return $this->{$this->getKeyName()};
+	}
 }

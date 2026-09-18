@@ -3,16 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     // GET ALL
-    public function index() 
+    public function index(Request $request)
 	{
-        return response()->json(Product::all(), 200);
-    }
+		$products = Product::query();
+
+		if ($request->has('search')) {
+			$products->where('product_name', 'like', "%{$request->query('search')}%");
+		}
+
+		if ($request->has('category_id')) {
+			$products->where('category_id', $request->hasQuery('category_id'));
+		}
+
+		if ($request->has('product_status')) {
+			$products->where('product_status', $request->hasQuery('product_status'));
+		}
+
+		return response()->json($products->get(), 200);
+	}
 
     // GET ONE
     public function show(Product $product)

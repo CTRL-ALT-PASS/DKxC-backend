@@ -3,16 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventoryItem;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class InventoryItemController extends Controller
 {
     // GET ALL
-    public function index()
+    public function index(Request $request)
 	{
-        return response()->json(InventoryItem::all(), 200);
-    }
+		$items = InventoryItem::query();
+
+		if ($request->has('product_id')) {
+			$items->where('product_id', $request->query('product_id'));
+		}
+
+		if ($request->has('branch_id')) {
+			$items->where('branch_id', $request->query('branch_id'));
+		}
+
+		if ($request->has('inventory_status')) {
+			$items->where('inventory_status', $request->query('inventory_status'));
+		}
+
+		return response()->json($items->get(), 200);
+	}
 
     // GET ONE
     public function show(InventoryItem $inventoryItem)

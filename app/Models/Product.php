@@ -22,4 +22,20 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
+	
+	public function sizes()
+	{
+		return $this->hasMany(ProductSize::class, 'product_id', 'product_id');
+	}
+
+
+	public function customisationGroups()
+	{
+		return $this->belongsToMany(
+			CustomisationGroup::class,
+			'product_customisation',
+			'product_id',
+			'group_id'
+		)->with('options');
+	}
 }
