@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryItem extends Model
 {
     protected $table = 'inventory_item';
+
     protected $primaryKey = 'inventory_item_id';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -15,7 +17,7 @@ class InventoryItem extends Model
         'product_id',
         'quantity_on_hand',
         'last_restocked',
-        'inventory_status'
+        'inventory_status',
     ];
 
     public function product()

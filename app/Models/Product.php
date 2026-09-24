@@ -1,11 +1,15 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
     protected $table = 'product';
+
     protected $primaryKey = 'product_id';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -15,27 +19,26 @@ class Product extends Model
         'selling_price',
         'cost_price',
         'reorder_level',
-        'product_status'
+        'product_status',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
-	
-	public function sizes()
-	{
-		return $this->hasMany(ProductSize::class, 'product_id', 'product_id');
-	}
 
+    public function sizes()
+    {
+        return $this->hasMany(ProductSize::class, 'product_id', 'product_id');
+    }
 
-	public function customisationGroups()
-	{
-		return $this->belongsToMany(
-			CustomisationGroup::class,
-			'product_customisation',
-			'product_id',
-			'group_id'
-		)->with('options');
-	}
+    public function customisationGroups()
+    {
+        return $this->belongsToMany(
+            CustomisationGroup::class,
+            'product_customisation',
+            'product_id',
+            'group_id'
+        )->with('options');
+    }
 }
