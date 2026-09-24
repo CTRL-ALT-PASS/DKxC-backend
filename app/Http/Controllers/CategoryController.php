@@ -9,38 +9,38 @@ class CategoryController extends Controller
 {
     // GET ALL
     public function index(Request $request)
-	{
-		$categories = Category::query();
+    {
+        $categories = Category::query();
 
-		if ($request->has('search')) {
-			$categories->where('category_name', 'like', "%{$request->query('search')}%");
-		}
+        if ($request->has('search')) {
+            $categories->where('category_name', 'like', "%{$request->query('search')}%");
+        }
 
-		return response()->json($categories->get(), 200);
-	}
+        return response()->json($categories->get(), 200);
+    }
 
     // GET ONE
     public function show(Category $category)
-	{
+    {
         return response()->json($category, 200);
     }
 
     // CREATE
     public function store(Request $request)
-	{
+    {
         $validated = $request->validate([
             'category_name' => 'required|string|max:255',
             'description'   => 'nullable|string',
         ]);
 
         $category = Category::create($validated);
-    
+
         return response()->json(['message' => 'Category created successfully!', 'data' => $category], 201);
     }
 
     // UPDATE
     public function update(Request $request, Category $category)
-	{
+    {
         $validated = $request->validate([
             'category_name' => 'sometimes|string|max:255',
             'description'   => 'sometimes|string',
@@ -53,8 +53,9 @@ class CategoryController extends Controller
 
     // DELETE
     public function destroy(Category $category)
-	{
+    {
         $category->delete();
+
         return response()->json(['message' => 'Category deleted successfully!'], 200);
     }
 }

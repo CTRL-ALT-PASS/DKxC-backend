@@ -7,13 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class CustomisationGroup extends Model
 {
     protected $table = 'customisation_group';
-	protected $primaryKey = 'group_id';
-	public $timestamps = false;
+
+    protected $primaryKey = 'group_id';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'group_name',
-		'selection_type',
-		'is_required',
+        'selection_type',
+        'is_required',
     ];
 
     public function options()

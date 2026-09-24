@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductCustomisation extends Model
 {
-	protected $table = 'customisation_option';
-	
+    protected $table = 'customisation_option';
+
     protected $fillable = [
         'product_id',
         'group_id',

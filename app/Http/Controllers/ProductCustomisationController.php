@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\CustomisationGroup;
 use Illuminate\Http\Request;
 
 class ProductCustomisationController extends Controller

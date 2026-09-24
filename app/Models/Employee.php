@@ -11,9 +11,13 @@ class Employee extends Authenticatable
     use HasApiTokens, Notifiable;
 
     protected $table = 'employee';
+
     protected $primaryKey = 'employee_id';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -24,20 +28,20 @@ class Employee extends Authenticatable
         'phone_number',
         'hire_date',
         'employment_status',
-        'pin_code'
+        'pin_code',
     ];
 
     protected $hidden = [
-        'pin_code'
+        'pin_code',
     ];
 
     public function getAuthPassword()
     {
         return $this->pin_code;
     }
-	
-	public function getKey()
-	{
-		return $this->{$this->getKeyName()};
-	}
+
+    public function getKey()
+    {
+        return $this->{$this->getKeyName()};
+    }
 }
